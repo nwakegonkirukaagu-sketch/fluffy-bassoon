@@ -1,218 +1,246 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <title>YouCanHeal — Welcome</title>
+<title>YouCanHeal — Welcome</title>
 
-  <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy"
-    content="
-      default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net https://*.supabase.co https://www.paypal.com;
-      style-src 'self' 'unsafe-inline';
-      img-src 'self' data:;
-      connect-src https://*.supabase.co;
-    ">
+<!-- ✅ SAFE CSP (Supabase + PayPal compatible) -->
+<meta http-equiv="Content-Security-Policy"
+	content="
+		default-src 'self';
+		script-src
+			'self'
+			'unsafe-inline'
+			https://cdn.jsdelivr.net
+			https://*.supabase.co
+			https://www.paypal.com
+			https://www.sandbox.paypal.com;
+		style-src
+			'self'
+			'unsafe-inline';
+		img-src
+			'self'
+			data:;
+		connect-src
+			'self'
+			https://*.supabase.co
+			https://www.paypal.com
+			https://www.sandbox.paypal.com
+			https://cdn.jsdelivr.net;
+		frame-src
+			https://www.paypal.com
+			https://www.sandbox.paypal.com;
+	">
 
-  <link rel="icon" href="images/youcanheal-logo.png" />
+<link rel="icon" href="images/youcanheal-logo.png" />
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- PayPal -->
-  <script src="https://www.paypal.com/sdk/js?client-id=AeAkNJQMO6eiYY-v0IsWHNm64M3nHUnFaqKZ0iICehGrAVufHv1c3DGLNPXRkbKjjTJ_0cjN0Slc5tZz&vault=true&intent=subscription"></script>
+<!-- PayPal -->
+<script src="https://www.paypal.com/sdk/js?client-id=AeAkNJQMO6eiYY-v0IsWHNm64M3nHUnFaqKZ0iICehGrAVufHv1c3DGLNPXRkbKjjTJ_0cjN0Slc5tZz&vault=true&intent=subscription"></script>
 
-  <style>
-    /* ---------- ROOT ---------- */
-    :root {
-      --text: #1f2937;
-      --muted: #6b7280;
-      --button: #3b82f6;
-      --button-hover: #2563eb;
-    }
+<style>
+body{
+margin:0;
+font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:url("images/youcanheal-bg.png") center/cover no-repeat;
+}
 
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: url("images/youcanheal-bg.png") center / cover no-repeat;
-    }
+/* Login card */
+.login-box{
+width:100%;
+max-width:420px;
+background:rgba(255,255,255,.95);
+border-radius:22px;
+padding:32px;
+text-align:center;
+box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
 
-    /* ---------- MOBILE FIX ---------- */
-    @media (max-width: 768px) {
-      body {
-        background-attachment: scroll;
-        padding: 12px;
-      }
-    }
+h1{color:#8fbfa8;margin:0}
+.subtitle{color:#6b7280;margin:8px 0 20px}
 
-    /* ---------- LOGIN CARD ---------- */
-    .login-box {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 20px;
-      padding: 32px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-      text-align: center;
-    }
+input{
+width:100%;
+padding:14px;
+border-radius:10px;
+border:1px solid #ddd;
+margin-bottom:10px;
+font-size:1rem;
+}
 
-    h1 {
-      margin: 0;
-      color: #8fbfa8;
-      font-size: 1.8rem;
-    }
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:#3b82f6;
+color:#fff;
+font-size:1rem;
+cursor:pointer;
+}
 
-    .subtitle {
-      margin: 8px 0 20px;
-      color: var(--muted);
-    }
+button:hover{background:#2563eb}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
+.consent{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:.9rem;
+color:#6b7280;
+margin-bottom:12px;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
-      font-size: 1rem;
-      background: var(--button);
-      color: #fff;
-      cursor: pointer;
-    }
+/* Floating donation */
+#donationFab{
+position:fixed;
+top:20px;
+right:20px;
+background:linear-gradient(135deg,#d8b4fe,#a78bfa);
+border:none;
+border-radius:999px;
+padding:12px 18px;
+color:#fff;
+font-weight:600;
+cursor:pointer;
+box-shadow:0 10px 30px rgba(167,139,250,.6);
+z-index:50;
+}
 
-    button:hover {
-      background: var(--button-hover);
-    }
+/* Donation modal */
+#donationModal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.45);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:60;
+}
 
-    .consent {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
+.donation-card{
+background:#fff;
+border-radius:18px;
+padding:26px;
+width:320px;
+text-align:center;
+box-shadow:0 20px 45px rgba(0,0,0,.3);
+}
 
-    .message {
-      margin-top: 10px;
-      font-size: 0.9rem;
-    }
+.donate-amount{
+width:100%;
+margin-top:10px;
+padding:10px;
+border-radius:10px;
+border:1px solid #ddd;
+cursor:pointer;
+}
 
-    /* ---------- COOKIE ---------- */
-    #cookie-banner {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(30,41,59,0.95);
-      color: #fff;
-      padding: 10px;
-      text-align: center;
-      font-size: 0.85rem;
-      z-index: 100;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
+.donate-amount.active{
+background:#a78bfa;
+color:#fff;
+border:none;
+}
 
-    #cookie-banner button {
-      margin-left: 8px;
-      padding: 4px 10px;
-      background: #facc15;
-      color: #000;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+/* Cookie */
+#cookie-banner{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#1e293b;
+color:#fff;
+padding:10px;
+font-size:.85rem;
+text-align:center;
+z-index:100;
+}
+#cookie-banner button{
+margin-left:8px;
+padding:4px 10px;
+background:#facc15;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+</style>
 
-  <!-- Supabase config -->
-  <script>
-    window.SUPABASE_URL = "https://hrpxfnrizypnqwsiasqw.supabase.co";
-    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhycHhmbnJpenlwbnF3aWFzcXciLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1OTAwNjUyNSwiZXhwIjoyMDc0NTgyNTI1fQ.4btbG22BF7WWtCvq1Du7Bo0aLcKHZIUV4MBwPQW53eY";
-  </script>
+<script>
+window.SUPABASE_URL="https://hrpxfnrizypnqwsiasqw.supabase.co";
+window.SUPABASE_ANON_KEY="YOUR_PUBLIC_ANON_KEY";
+</script>
 </head>
 
 <body>
 
-  <div class="login-box">
-    <h1>Welcome to YouCanHeal</h1>
-    <p class="subtitle">Your gentle wellbeing companion 🌷</p>
+<button id="donationFab">💜 Support Us</button>
 
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="Enter your email" required />
+<div class="login-box">
+<h1>Welcome to YouCanHeal</h1>
+<p class="subtitle">Your gentle wellbeing companion 🌷</p>
 
-      <label class="consent">
-        <input type="checkbox" id="consent" />
-        I consent to store non-sensitive data
-      </label>
+<form id="loginForm">
+<input type="email" id="email" placeholder="Enter your email" required>
+<label class="consent">
+<input type="checkbox" id="consent"> I consent to store non-sensitive data
+</label>
+<button type="submit">Send Magic Link</button>
+<div id="msg"></div>
+</form>
+</div>
 
-      <button type="submit">Send Magic Link</button>
-      <div id="msg" class="message"></div>
-    </form>
-  </div>
+<!-- Donation Modal -->
+<div id="donationModal">
+<div class="donation-card">
+<h2>Support YouCanHeal</h2>
+<p>Your support keeps this platform free 💛</p>
 
-  <!-- Cookie -->
-  <div id="cookie-banner" style="display:none;">
-    🍪 We use cookies to improve your experience.
-    <button id="cookie-ok">OK</button>
-  </div>
+<button class="donate-amount active" data-amt="2">£2 / month</button>
+<button class="donate-amount" data-amt="5">£5 / month</button>
 
-  <script type="module">
-    const supabase = window.supabase.createClient(
-      window.SUPABASE_URL,
-      window.SUPABASE_ANON_KEY
-    );
+<div id="paypal-button-container"></div>
+</div>
+</div>
 
-    const form = document.getElementById("loginForm");
-    const msg = document.getElementById("msg");
+<!-- Cookie -->
+<div id="cookie-banner" style="display:none">
+🍪 We use cookies to improve your experience.
+<button id="cookie-ok">OK</button>
+</div>
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      msg.textContent = "";
+<script type="module">
+const supabase=window.supabase.createClient(
+window.SUPABASE_URL,
+window.SUPABASE_ANON_KEY
+);
 
-      if (!document.getElementById("consent").checked) {
-        msg.textContent = "Please accept consent.";
-        return;
-      }
+loginForm.onsubmit=async e=>{
+e.preventDefault();
+if(!consent.checked){msg.textContent="Please accept consent.";return;}
+const {error}=await supabase.auth.signInWithOtp({
+email:email.value,
+options:{emailRedirectTo:"https://youcanheal.co.uk/dashboard.html"}
+});
+msg.textContent=error?"Failed to send link":"Magic link sent! Check email.";
+};
 
-      const email = document.getElementById("email").value.trim();
+// Cookie
+if(!localStorage.getItem("yc_cookie")){
+cookie-banner.style.display="block";
+cookie-ok.onclick=()=>{localStorage.setItem("yc_cookie","1");cookie-banner.remove();}
+}
 
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: "https://youcanheal.co.uk/dashboard.html"
-        }
-      });
-
-      if (error) {
-        msg.textContent = "Unable to send link. Try again.";
-      } else {
-        msg.textContent = "Magic link sent! Check your email.";
-      }
-    });
-
-    // Cookie banner
-    const banner = document.getElementById("cookie-banner");
-    if (!localStorage.getItem("yc_cookie")) {
-      banner.style.display = "block";
-      document.getElementById("cookie-ok").onclick = () => {
-        localStorage.setItem("yc_cookie", "1");
-        banner.remove();
-      };
-    }
-  </script>
+// Donation
+donationFab.onclick=()=>donationModal.style.display="flex";
+donationModal.onclick=e=>{if(e.target===donationModal)donationModal.style.display="none"};
+</script>
 
 </body>
 </html>
