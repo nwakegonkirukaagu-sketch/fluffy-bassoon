@@ -1,547 +1,172 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
   <title>YouCanHeal — Welcome</title>
 
-  <!-- PayPal SDK for subscriptions -->
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src 'self' https://cdn.jsdelivr.net https://*.supabase.co https://www.paypal.com;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data:;
+      connect-src https://*.supabase.co;
+    ">
+
+  <link rel="icon" href="images/youcanheal-logo.png" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- PayPal -->
   <script src="https://www.paypal.com/sdk/js?client-id=AeAkNJQMO6eiYY-v0IsWHNm64M3nHUnFaqKZ0iICehGrAVufHv1c3DGLNPXRkbKjjTJ_0cjN0Slc5tZz&vault=true&intent=subscription"></script>
 
-  <link rel="icon" type="image/png" href="images/youcanheal-logo.png">
-
   <style>
+    /* ---------- ROOT ---------- */
     :root {
       --text: #1f2937;
       --muted: #6b7280;
-      --border: #e5e7eb;
       --button: #3b82f6;
-      --button-hover: #6AA6EA;
-      --lavender: #a855f7;
-      --lavender-soft: #d8b4fe;
+      --button-hover: #2563eb;
     }
 
-    [data-theme="dark"] {
-      --text: #E0E0E0;
-      --muted: #B0B0B0;
-      --border: #2A2A2A;
-      --button: #4A90E2;
-      --button-hover: #6AA6EA;
-    }
-
-    body.login-page {
-      background-image: url("images/youcanheal-bg.png");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      color: var(--text);
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
-      margin: 0;
+      background: url("images/youcanheal-bg.png") center / cover no-repeat;
     }
 
-    [data-theme="dark"] body.login-page {
-      background-image:
-        linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
-        url("images/youcanheal-bg.png");
+    /* ---------- MOBILE FIX ---------- */
+    @media (max-width: 768px) {
+      body {
+        background-attachment: scroll;
+        padding: 12px;
+      }
     }
 
+    /* ---------- LOGIN CARD ---------- */
     .login-box {
-      background: rgba(255, 255, 255, 0.88);
-      border-radius: 20px;
-      padding: 40px 50px;
+      width: 100%;
       max-width: 420px;
-      width: 90%;
-      box-shadow: 0 0 25px rgba(74, 144, 226, 0.2);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
       text-align: center;
     }
 
-    [data-theme="dark"] .login-box {
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid var(--border);
-    }
-
-    .login-box h1 {
-      color: #A3D3B8;
-      margin-bottom: 8px;
-      font-weight: 700;
+    h1 {
+      margin: 0;
+      color: #8fbfa8;
       font-size: 1.8rem;
     }
 
-    .login-box .subtitle {
+    .subtitle {
+      margin: 8px 0 20px;
       color: var(--muted);
-      margin-bottom: 25px;
-      font-size: 1.1rem;
-      font-weight: 500;
     }
 
-    .login-box input[type="email"] {
+    input {
       width: 100%;
       padding: 14px;
-      margin: 10px 0;
       border-radius: 10px;
-      border: 2px solid var(--border);
+      border: 1px solid #ddd;
       font-size: 1rem;
-      box-sizing: border-box;
+      margin-bottom: 10px;
     }
 
-    .login-box input[type="email"]:focus {
-      outline: none;
-      border-color: var(--button);
-      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
-    }
-
-    .consent-label {
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      color: var(--muted);
-      text-align: left;
-      margin-top: 6px;
-    }
-
-    .consent-label input[type="checkbox"] {
-      margin-right: 8px;
-      accent-color: #10b981;
-    }
-
-    .login-box button[type="submit"] {
+    button {
       width: 100%;
-      margin-top: 15px;
       padding: 14px;
       border-radius: 10px;
+      border: none;
+      font-size: 1rem;
       background: var(--button);
-      color: white;
-      border: none;
-      font-weight: 600;
-      font-size: 1.05rem;
+      color: #fff;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(74, 144, 226, 0.25);
-      transition: all 0.25s ease;
     }
 
-    .login-box button[type="submit"]:hover {
+    button:hover {
       background: var(--button-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(74, 144, 226, 0.35);
     }
 
-    .login-box button[type="submit"]:disabled {
-      opacity: 0.7;
-      transform: none;
-      cursor: not-allowed;
-    }
-
-    .help-text {
-      margin-top: 15px;
+    .consent {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-size: 0.9rem;
       color: var(--muted);
-      line-height: 1.4;
+      margin-bottom: 12px;
     }
 
-    .theme-toggle {
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: white;
-      padding: 6px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      float: right;
-      margin-bottom: 10px;
-    }
-
-    [data-theme="dark"] .theme-toggle {
-      background: rgba(15,23,42,0.8);
-      border-color: rgba(148,163,184,0.4);
-    }
-
-    .disclaimer {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(107, 114, 128, 0.2);
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.4;
-      text-align: left;
-    }
-
-    /* Floating buttons */
-    .floating-btn {
-      position: fixed;
-      z-index: 50;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.35);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    #supportBtn {
-      top: 16px;
-      right: 16px;
-      background: radial-gradient(circle at top left, #f9f5ff, #c4b5fd, #a855f7);
-      color: #111827;
-    }
-
-    #supportBtn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.5);
-    }
-
-    #contactBtn {
-      bottom: 16px;
-      right: 16px;
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-    }
-
-    #contactBtn:hover {
-      background: rgba(15, 23, 42, 1);
-      transform: translateY(-1px);
-    }
-
-    /* Dark glass modals (Support + Contact) */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(10px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 60;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-card {
-      background: radial-gradient(circle at top left,
-        rgba(15, 23, 42, 0.9),
-        rgba(15, 23, 42, 0.96));
-      border-radius: 18px;
-      padding: 22px 22px 18px;
-      max-width: 420px;
-      width: 92vw;
-      color: #e5e7eb;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      position: relative;
-      border: 1px solid rgba(148,163,184,0.35);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      border: none;
-      background: transparent;
-      color: #e5e7eb;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .modal-title {
-      margin: 0 0 6px;
-      font-size: 1.3rem;
-      font-weight: 600;
-    }
-
-    .modal-sub {
-      margin: 0 0 14px;
-      font-size: 0.92rem;
-      color: #cbd5f5;
-    }
-
-    .pill-row {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .amount-pill {
-      flex: 1;
-      min-width: 70px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      background: transparent;
-      color: #e5e7eb;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .amount-pill.active {
-      background: linear-gradient(135deg, #a855f7, #6366f1);
-      border-color: transparent;
-      color: white;
-    }
-
-    .custom-amount-input {
-      width: 100%;
-      margin-top: 6px;
-      padding: 8px;
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-    }
-
-    .toggle-row {
-      display: flex;
-      gap: 12px;
-      margin: 10px 0;
-      font-size: 0.85rem;
-    }
-
-    .toggle-row label {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .totals-row {
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid rgba(148, 163, 184, 0.5);
-      border-bottom: 1px solid rgba(148, 163, 184, 0.5);
-      padding: 8px 0;
-      margin-top: 6px;
+    .message {
+      margin-top: 10px;
       font-size: 0.9rem;
     }
 
-    .totals-row strong {
-      font-weight: 600;
-    }
-
-    .primary-donate-btn {
-      width: 100%;
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 999px;
-      border: none;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #ecfdf5;
-      font-weight: 600;
-      font-size: 0.98rem;
-      cursor: pointer;
-    }
-
-    .primary-donate-btn:hover {
-      filter: brightness(1.05);
-    }
-
-    #paypal-button-container {
-      margin-top: 8px;
-    }
-
-    .modal-footnote {
-      font-size: 0.75rem;
-      opacity: 0.7;
-      margin-top: 8px;
-    }
-
-    /* Contact modal specific */
-    .contact-body {
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-top: 8px;
-    }
-
-    .contact-link {
-      color: #a5b4fc;
-      text-decoration: underline;
-    }
-
-    .contact-link:hover {
-      color: #c4b5fd;
-    }
-
-    /* Cookie banner */
+    /* ---------- COOKIE ---------- */
     #cookie-banner {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(30, 41, 59, 0.95);
-      color: white;
-      padding: 12px 16px;
-      font-size: 0.85rem;
+      background: rgba(30,41,59,0.95);
+      color: #fff;
+      padding: 10px;
       text-align: center;
-      backdrop-filter: blur(10px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.85rem;
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
-    #cookie-accept {
-      margin-left: 10px;
+    #cookie-banner button {
+      margin-left: 8px;
       padding: 4px 10px;
-      border: none;
-      border-radius: 6px;
-      background: #ffc107;
+      background: #facc15;
       color: #000;
-      font-weight: bold;
+      border-radius: 6px;
+      border: none;
       cursor: pointer;
     }
-
-    @media (max-width: 500px) {
-      .login-box {
-        padding: 26px 20px 30px;
-      }
-      .theme-toggle {
-        font-size: 0.8rem;
-        padding: 4px 8px;
-      }
-      #supportBtn {
-        top: 10px;
-        right: 10px;
-        padding: 7px 12px;
-      }
-      #contactBtn {
-        bottom: 10px;
-        right: 10px;
-        padding: 7px 12px;
-      }
-    }
   </style>
-
-  <!-- Supabase browser library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Supabase config -->
   <script>
     window.SUPABASE_URL = "https://hrpxfnrizypnqwsiasqw.supabase.co";
-    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhycHhmbnJpenlwbnF3c2lhc3F3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDY1MjUsImV4cCI6MjA3NDU4MjUyNX0.4btbG22BF7WWtCvq1Du7Bo0aLcKHZIUV4MBwPQW53eY";
-
-    // Optional: override this in production with a small script tag:
-    // <script>window.BACKEND_URL = "https://your-backend-domain.com";</script>
-    window.BACKEND_URL = window.BACKEND_URL || "http://localhost:3000";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhycHhmbnJpenlwbnF3aWFzcXciLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1OTAwNjUyNSwiZXhwIjoyMDc0NTgyNTI1fQ.4btbG22BF7WWtCvq1Du7Bo0aLcKHZIUV4MBwPQW53eY";
   </script>
 </head>
 
-<body class="login-page" data-theme="light">
+<body>
 
-  <!-- Floating buttons -->
-  <button id="supportBtn" class="floating-btn" type="button">
-    ❤️ Support Us
-  </button>
-
-  <button id="contactBtn" class="floating-btn" type="button">
-    ✉ Contact
-  </button>
-
-  <!-- Login card -->
   <div class="login-box">
-    <button id="themeToggle" class="theme-toggle" type="button">🌙 Dark</button>
-
     <h1>Welcome to YouCanHeal</h1>
     <p class="subtitle">Your gentle wellbeing companion 🌷</p>
 
-    <form id="magicForm">
-      <label for="email" style="display:block;text-align:left;font-weight:600;color:#374151;margin-bottom:5px;">
-        Email Address
-      </label>
-      <input id="email" type="email" placeholder="Enter your email" required />
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Enter your email" required />
 
-      <label class="consent-label">
+      <label class="consent">
         <input type="checkbox" id="consent" />
-        I consent to store non-sensitive data for sign-in
+        I consent to store non-sensitive data
       </label>
 
       <button type="submit">Send Magic Link</button>
+      <div id="msg" class="message"></div>
     </form>
-
-    <p class="help-text">
-      📧 Check your spam folder if you don't see the link within a few minutes.
-      <br />
-      For questions or sponsorship: 
-      <a class="contact-link" href="mailto:contact@youcanheal.co.uk">contact@youcanheal.co.uk</a>
-    </p>
-
-    <div class="disclaimer">
-      <p><strong>Privacy:</strong> We respect your data and use minimal cookies for functionality.</p>
-      <p><strong>Disclaimer:</strong> YouCanHeal offers wellbeing support and is not a substitute for medical advice. For emergencies, contact local services.</p>
-    </div>
   </div>
 
-  <!-- Cookie banner -->
+  <!-- Cookie -->
   <div id="cookie-banner" style="display:none;">
-    🍪 We use cookies to improve your experience. By continuing, you agree to our
-    <a href="#" style="color:#ffc107;">cookie policy</a>.
-    <button id="cookie-accept">OK</button>
-  </div>
-
-  <!-- Support (Donation) Modal -->
-  <div id="supportModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="supportTitle">
-    <div class="modal-card">
-      <button class="modal-close" id="supportClose" type="button" aria-label="Close support dialog">×</button>
-      <h2 id="supportTitle" class="modal-title">Support YouCanHeal</h2>
-      <p class="modal-sub">
-        Your donation helps us keep wellbeing tools free and accessible for people who need them most. 💚
-      </p>
-
-      <div class="pill-row">
-        <button type="button" class="amount-pill active" data-amount="2">£2</button>
-        <button type="button" class="amount-pill" data-amount="5">£5</button>
-        <button type="button" class="amount-pill" data-amount="custom">Custom</button>
-      </div>
-
-      <input id="customAmountInput" class="custom-amount-input" type="number" min="1" placeholder="Enter custom amount" style="display:none;" />
-
-      <div class="toggle-row">
-        <label>
-          <input type="radio" name="freq" value="monthly" checked />
-          Monthly
-        </label>
-        <label>
-          <input type="radio" name="freq" value="once" />
-          One-time
-        </label>
-      </div>
-
-      <div class="totals-row">
-        <div><strong>3% fee cover</strong> <span id="feeAmount">£0.06</span></div>
-        <div><strong>Total</strong> <span id="totalAmount">£2.06</span></div>
-      </div>
-
-      <button id="stripeDonateBtn" class="primary-donate-btn" type="button">
-        Donate via Stripe
-      </button>
-
-      <div style="margin-top:8px;font-size:0.8rem;">Or support monthly via PayPal:</div>
-      <div id="paypal-button-container"></div>
-
-      <div class="modal-footnote">
-        Thank you for helping YouCanHeal grow and stay independent. 🌿
-      </div>
-    </div>
-  </div>
-
-  <!-- Contact Modal -->
-  <div id="contactModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
-    <div class="modal-card">
-      <button class="modal-close" id="contactClose" type="button" aria-label="Close contact dialog">×</button>
-      <h2 id="contactTitle" class="modal-title">Contact YouCanHeal</h2>
-      <p class="modal-sub">
-        Whether you're a sponsor, partner, or just need help, you're welcome here.
-      </p>
-      <div class="contact-body">
-        📩 <strong>Email:</strong><br />
-        <a class="contact-link" href="mailto:contact@youcanheal.co.uk">contact@youcanheal.co.uk</a><br /><br />
-        We aim to respond within 2–3 working days.
-      </div>
-    </div>
+    🍪 We use cookies to improve your experience.
+    <button id="cookie-ok">OK</button>
   </div>
 
   <script type="module">
@@ -550,208 +175,44 @@
       window.SUPABASE_ANON_KEY
     );
 
-    const themeBtn = document.getElementById("themeToggle");
-    const applyTheme = (theme) => {
-      document.body.dataset.theme = theme;
-      if (themeBtn) {
-        themeBtn.textContent = theme === "dark" ? "☀️ Light" : "🌙 Dark";
-      }
-      localStorage.setItem("yc_theme", theme);
-    };
-    applyTheme(localStorage.getItem("yc_theme") || "light");
-    themeBtn?.addEventListener("click", () => {
-      const next = document.body.dataset.theme === "dark" ? "light" : "dark";
-      applyTheme(next);
-    });
+    const form = document.getElementById("loginForm");
+    const msg = document.getElementById("msg");
 
-    const supportModal = document.getElementById("supportModal");
-    const contactModal = document.getElementById("contactModal");
-    const supportBtn = document.getElementById("supportBtn");
-    const contactBtn = document.getElementById("contactBtn");
-    const supportClose = document.getElementById("supportClose");
-    const contactClose = document.getElementById("contactClose");
-    const openModal = (modal) => modal?.classList.add("open");
-    const closeModal = (modal) => modal?.classList.remove("open");
-    supportBtn?.addEventListener("click", () => openModal(supportModal));
-    contactBtn?.addEventListener("click", () => openModal(contactModal));
-    supportClose?.addEventListener("click", () => closeModal(supportModal));
-    contactClose?.addEventListener("click", () => closeModal(contactModal));
-    supportModal?.addEventListener("click", (event) => {
-      if (event.target === supportModal) closeModal(supportModal);
-    });
-    contactModal?.addEventListener("click", (event) => {
-      if (event.target === contactModal) closeModal(contactModal);
-    });
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "";
 
-    const amountPills = document.querySelectorAll(".amount-pill");
-    const customAmountInput = document.getElementById("customAmountInput");
-    const feeAmountEl = document.getElementById("feeAmount");
-    const totalAmountEl = document.getElementById("totalAmount");
-    const freqRadios = document.querySelectorAll("input[name='freq']");
-    const getSelectedFrequency = () => (
-      document.querySelector("input[name='freq']:checked")?.value || "monthly"
-    );
-    const getAmount = () => {
-      const active = document.querySelector(".amount-pill.active");
-      if (!active) return 0;
-      const value = active.dataset.amount;
-      if (value === "custom") {
-        return Number(customAmountInput?.value || 0);
-      }
-      return Number(value);
-    };
-    const updateTotals = () => {
-      const amount = getAmount();
-      if (!amount || amount <= 0) {
-        if (feeAmountEl) feeAmountEl.textContent = "£0.00";
-        if (totalAmountEl) totalAmountEl.textContent = "£0.00";
+      if (!document.getElementById("consent").checked) {
+        msg.textContent = "Please accept consent.";
         return;
       }
-      const fee = +(amount * 0.03).toFixed(2);
-      const total = +(amount + fee).toFixed(2);
-      if (feeAmountEl) feeAmountEl.textContent = `£${fee.toFixed(2)}`;
-      if (totalAmountEl) totalAmountEl.textContent = `£${total.toFixed(2)}`;
-    };
-    amountPills.forEach((pill) => {
-      pill.addEventListener("click", () => {
-        amountPills.forEach((p) => p.classList.remove("active"));
-        pill.classList.add("active");
-        if (customAmountInput) {
-          const isCustom = pill.dataset.amount === "custom";
-          customAmountInput.style.display = isCustom ? "block" : "none";
-          if (!isCustom) customAmountInput.value = "";
+
+      const email = document.getElementById("email").value.trim();
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: "https://youcanheal.co.uk/dashboard.html"
         }
-        updateTotals();
       });
-    });
-    customAmountInput?.addEventListener("input", updateTotals);
-    freqRadios.forEach((radio) => radio.addEventListener("change", updateTotals));
-    updateTotals();
 
-    const magicForm = document.getElementById("magicForm");
-    magicForm?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const emailField = document.getElementById("email");
-      const consent = document.getElementById("consent");
-      const submitBtn = event.target.querySelector("button[type='submit']");
-      const originalText = submitBtn?.textContent || "Send Magic Link";
-      const email = emailField?.value.trim();
-      if (!consent?.checked) {
-        alert("Please tick the consent box.");
-        return;
-      }
-      if (!email || !email.includes("@")) {
-        alert("Enter a valid email address.");
-        return;
-      }
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Sending…";
-      }
-      try {
-        const redirectTo = `${window.location.origin}/dashboard.html`;
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            shouldCreateUser: true,
-            emailRedirectTo: redirectTo
-          }
-        });
-        if (error) throw error;
-        alert("Magic link sent! Please check your inbox.");
-      } catch (err) {
-        console.error("Magic link error:", err);
-        alert("Sorry, we couldn't send the link. Please try again.");
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-        }
+      if (error) {
+        msg.textContent = "Unable to send link. Try again.";
+      } else {
+        msg.textContent = "Magic link sent! Check your email.";
       }
     });
 
-    const stripeBtn = document.getElementById("stripeDonateBtn");
-    stripeBtn?.addEventListener("click", async () => {
-      const amount = getAmount();
-      if (!amount || amount <= 0) {
-        alert("Please choose or enter a valid amount.");
-        return;
-      }
-      const recurring = getSelectedFrequency() === "monthly";
-      const originalText = stripeBtn.textContent;
-      stripeBtn.disabled = true;
-      stripeBtn.textContent = "Redirecting…";
-      try {
-        const response = await fetch(`${window.BACKEND_URL}/api/create-session`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount, recurring })
-        });
-        if (!response.ok) throw new Error("Failed to start checkout");
-        const data = await response.json();
-        if (!data?.url) throw new Error("Checkout URL missing");
-        window.location.href = data.url;
-      } catch (err) {
-        console.error("Stripe donation error:", err);
-        alert("Unable to start checkout. Please try again later.");
-      } finally {
-        stripeBtn.disabled = false;
-        stripeBtn.textContent = originalText;
-      }
-    });
-
-    const PAYPAL_PLANS = {
-      2: "P-6PU50610GN123364SNE27HYY",
-      5: "P-8J411952AV1634600NE27J6Q"
-    };
-    if (window.paypal?.Buttons) {
-      window.paypal.Buttons({
-        style: { layout: "vertical", color: "gold", shape: "rect", label: "subscribe" },
-        createSubscription(data, actions) {
-          if (getSelectedFrequency() !== "monthly") {
-            alert("PayPal only supports monthly plans. Please choose Monthly.");
-            return;
-          }
-          const amount = getAmount();
-          const planId = PAYPAL_PLANS[amount];
-          if (!planId) {
-            alert("PayPal supports only £2 or £5 monthly plans.");
-            return;
-          }
-          return actions.subscription.create({ plan_id: planId });
-        },
-        onApprove(data) {
-          alert("Thank you for supporting YouCanHeal via PayPal! ❤️");
-          console.log("PayPal subscription active:", data.subscriptionID);
-        },
-        onError(err) {
-          console.error("PayPal error:", err);
-          alert("PayPal could not start the subscription. Please try again.");
-        }
-      }).render("#paypal-button-container");
-    } else {
-      console.warn("PayPal SDK not available; skipping PayPal button render.");
+    // Cookie banner
+    const banner = document.getElementById("cookie-banner");
+    if (!localStorage.getItem("yc_cookie")) {
+      banner.style.display = "block";
+      document.getElementById("cookie-ok").onclick = () => {
+        localStorage.setItem("yc_cookie", "1");
+        banner.remove();
+      };
     }
-
-    const cookieBanner = document.getElementById("cookie-banner");
-    const cookieAccept = document.getElementById("cookie-accept");
-    if (cookieBanner && !localStorage.getItem("yc_cookie")) {
-      cookieBanner.style.display = "block";
-      cookieAccept?.addEventListener("click", () => {
-        localStorage.setItem("yc_cookie", "true");
-        cookieBanner.style.display = "none";
-      });
-    }
-
-    window.addEventListener("load", () => {
-      if (window.location.hash.includes("access_token")) {
-        const hash = window.location.hash;
-        const destination = `${window.location.origin}/dashboard.html${hash}`;
-        window.location.replace(destination);
-      }
-    });
   </script>
 
 </body>
 </html>
-
