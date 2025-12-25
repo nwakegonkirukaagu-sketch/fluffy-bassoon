@@ -1158,6 +1158,46 @@ contactModal?.addEventListener("click", (event) => {
     </form>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+/* ---------- SUPABASE CONFIG ---------- */
+const SUPABASE_URL = "https://hrpxfnrizypnqwsiasqw.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+/* ---------- AUTH GUARD ---------- */
+async function protectDashboard() {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.replace("index.html");
+    return;
+  }
+
+  // expose for rest of dashboard
+  window.supabaseClient = supabase;
+  window.currentUser = session.user;
+
+  const username = document.getElementById("username");
+  if (username) username.textContent = session.user.email;
+
+  console.info("✅ Logged in:", session.user.email);
+}
+
+protectDashboard();
+
+/* ---------- SIGN OUT ---------- */
+async function signOut() {
+  await supabase.auth.signOut();
+  window.location.replace("index.html");
+}
+</script>
 
 </body>
+
 </html>
