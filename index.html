@@ -538,7 +538,7 @@ upgrade-insecure-requests;
       📧 Check your spam folder if you don't see the link within a few minutes.
       <br />
       For questions or sponsorship: 
-      <a class="contact-link" href="mailto:contact@youcanheal.co.uk">contact@youcanheal.co.uk</a>
+      <a class="contact-link" href="mailto:youcanheal@youcanheal.co.uk">youcanheal@youcanheal.co.uk</a>
     </p>
 
     <div class="disclaimer">
@@ -610,7 +610,7 @@ upgrade-insecure-requests;
       </p>
       <div class="contact-body">
         📩 <strong>Email:</strong><br />
-        <a class="contact-link" href="mailto:contact@youcanheal.co.uk">contact@youcanheal.co.uk</a><br /><br />
+        <a class="contact-link" href="mailto:youcanheal@youcanheal.co.uk">youcanheal@youcanheal.co.uk</a><br /><br />
         We aim to respond within 2–3 working days.
       </div>
     </div>
@@ -619,10 +619,11 @@ upgrade-insecure-requests;
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script type="module">
-    const supabase = window.supabase.createClient(
+    const supabase = window.__ycSupabaseClient ?? window.supabase.createClient(
       window.SUPABASE_URL,
       window.SUPABASE_ANON_KEY
     );
+    window.__ycSupabaseClient = supabase;
 
     const toastEl = document.getElementById("toast");
     let toastTimer;
@@ -635,20 +636,6 @@ upgrade-insecure-requests;
       toastTimer = setTimeout(() => {
         toastEl.classList.remove("visible");
       }, 4000);
-    };
-
-    const formMessage = document.getElementById("formMessage");
-    const setFormMessage = (message, variant = "info") => {
-      if (!formMessage) return;
-      if (!message) {
-        formMessage.hidden = true;
-        formMessage.textContent = "";
-        formMessage.className = "form-message";
-        return;
-      }
-      formMessage.hidden = false;
-      formMessage.textContent = message;
-      formMessage.className = `form-message ${variant}`;
     };
 
     const themeBtn = document.getElementById("themeToggle");
@@ -728,47 +715,6 @@ upgrade-insecure-requests;
     customAmountInput?.addEventListener("input", updateTotals);
     freqRadios.forEach((radio) => radio.addEventListener("change", updateTotals));
     updateTotals();
-
-    const magicForm = document.getElementById("magicForm");
-    magicForm?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const emailField = document.getElementById("email");
-      const consent = document.getElementById("consent");
-      const submitBtn = event.target.querySelector("button[type='submit']");
-      const originalText = submitBtn?.textContent || "Send Magic Link";
-      const email = emailField?.value.trim();
-      setFormMessage("");
-      if (!consent?.checked) {
-        setFormMessage("Please tick the consent box.", "error");
-        return;
-      }
-      if (!email || !email.includes("@")) {
-        setFormMessage("Enter a valid email address.", "error");
-        return;
-      }
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Sending…";
-      }
-      try {
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            emailRedirectTo: "https://youcanheal.co.uk/dashboard.html"
-          }
-        });
-        if (error) throw error;
-        setFormMessage("Magic link sent! Please check your inbox.", "success");
-      } catch (err) {
-        console.error("Magic link error:", err);
-        setFormMessage("Sorry, we couldn't send the link. Please try again.", "error");
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-        }
-      }
-    });
 
     const stripeBtn = document.getElementById("stripeDonateBtn");
     stripeBtn?.addEventListener("click", async () => {
@@ -850,6 +796,8 @@ upgrade-insecure-requests;
       }
     });
   </script>
+
+      <script type="module" src="/style.js"></script>
 
 </body>
 </html>
